@@ -1081,6 +1081,151 @@
   .td-recent:empty { display: none; }
   .td-rs .td-style svg { width: 24px !important; opacity: .8; }
   .td-rs { min-width: 30px; padding: 0 3px; }
+  /* =====================================================================================
+     macOS-style window chrome (last in the cascade on purpose: it refines everything above)
+     One unified light toolbar, sidebars flush with the window and separated by hairlines,
+     borderless sections, native-looking controls, a slim status bar.
+     ===================================================================================== */
+  :root {
+    --page-bg: #ececee; --chrome: rgba(246,246,248,.86); --sidebar: rgba(248,248,250,.94); --hairline: rgba(0,0,0,.10);
+    --ctrl-bg: #ffffff; --ctrl-border: rgba(0,0,0,.13); --ctrl-shadow: 0 .5px 1px rgba(0,0,0,.08); --seg-track: rgba(118,118,128,.12);
+    --text: #1d1d1f; --text-secondary: #6e6e73; --text-tertiary: #3a3a3c; --chip-bg: #f2f2f5; --chip-bg-hover: #e8e8ed; --btn-bg: #ffffff; --btn-bg-hover: #f0f0f3;
+    --card-bg: #ffffff; --panel-border: rgba(0,0,0,.09); --input-border: rgba(0,0,0,.14);
+  }
+  [data-theme="dark"] {
+    --page-bg: #1c1c1e; --bg: #1c1c1e; --chrome: rgba(40,40,43,.88); --sidebar: rgba(32,32,35,.96); --hairline: rgba(255,255,255,.09);
+    --ctrl-bg: #3a3a3c; --ctrl-border: rgba(255,255,255,.10); --ctrl-shadow: 0 .5px 0 rgba(255,255,255,.06) inset; --seg-track: rgba(118,118,128,.24);
+    --text: #f5f5f7; --text-secondary: #98989d; --text-tertiary: #d1d1d6; --chip-bg: #2c2c2e; --chip-bg-hover: #3a3a3c; --btn-bg: #3a3a3c; --btn-bg-hover: #48484a;
+    --card-bg: #2c2c2e; --panel-border: rgba(255,255,255,.09); --input-border: rgba(255,255,255,.14); --panel-bg: rgba(32,32,35,.92);
+  }
+  body { padding: 0; gap: 0; background: var(--page-bg); font-size: 13px; }
+
+  /* --- toolbar (header) --- */
+  .app-header { height: 52px; padding: 0 12px 0 14px; gap: 12px; border-radius: 0; border: none; border-bottom: 1px solid var(--hairline);
+    background: var(--chrome); backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8); box-shadow: none; color: var(--text); }
+  .logo-box { width: 30px; height: 30px; border-radius: 8px; border: none; background: linear-gradient(145deg, #1e293b, #0b1220);
+    box-shadow: 0 1px 2px rgba(0,0,0,.25), inset 0 .5px 0 rgba(255,255,255,.18); }
+  .logo-box .logo-mark { width: 21px; height: 21px; filter: drop-shadow(0 0 4px rgba(var(--glow-rgb), .5)); }
+  .title-group h1 { font-size: 13.5px; font-weight: 650; letter-spacing: -0.01em; color: var(--text); }
+  .tab-bar { gap: 4px; padding: 0 4px; }
+  .tab { height: 30px; width: 160px; min-width: 160px; max-width: 160px; border-radius: 8px; padding: 0 8px 0 12px; border: none; background: transparent;
+    color: var(--text-secondary); font-size: 12.5px; font-weight: 500; box-shadow: none; }
+  .tab:hover { background: rgba(118,118,128,.12); color: var(--text); }
+  .tab.active { background: var(--ctrl-bg); color: var(--text); border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 1px 3px rgba(0,0,0,.08); font-weight: 600; }
+  .tab.active:hover { background: var(--ctrl-bg); }
+  .tab-close { opacity: 0; color: var(--text-secondary); width: 16px; height: 16px; font-size: 14px; }
+  .tab:hover .tab-close, .tab.active .tab-close { opacity: .75; }
+  .tab-close:hover { background: rgba(118,118,128,.2); opacity: 1; }
+  .tab-name-input { background: var(--ctrl-bg); color: var(--text); }
+  .new-tab-btn, .theme-toggle-btn, .header-link-btn, .accent-btn { width: 28px; height: 28px; border-radius: 7px; background: transparent; color: var(--text-secondary); box-shadow: none; }
+  .new-tab-btn:hover, .theme-toggle-btn:hover, .header-link-btn:hover, .accent-btn:hover { background: rgba(118,118,128,.14); color: var(--text); }
+  .header-link-btn svg { width: 16px; height: 16px; }
+  .accent-btn .dot { width: 13px; height: 13px; box-shadow: 0 0 0 2px var(--chrome), 0 0 0 3px rgba(var(--glow-rgb), .5); }
+
+  /* --- window body: sidebars flush with hairlines, canvas edge to edge --- */
+  .layout { gap: 0; }
+  .center-area { gap: 0; }
+  .panel { border-radius: 0; border: none; box-shadow: none; background: var(--sidebar); backdrop-filter: blur(30px) saturate(1.6); -webkit-backdrop-filter: blur(30px) saturate(1.6);
+    padding: 14px 14px 20px; gap: 0; }
+  .side-wrapper.left-side .panel { border-right: 1px solid var(--hairline); }
+  .side-wrapper.right-side .panel { border-left: 1px solid var(--hairline); }
+  .canvas-wrap { border-radius: 0; border: none; box-shadow: none; }
+  .hint { display: none; }
+  .collapse-btn { width: 14px; height: 44px; border-radius: 0 6px 6px 0; background: var(--sidebar); border: 1px solid var(--hairline); box-shadow: none; opacity: .7; }
+  .collapse-btn:hover { opacity: 1; }
+  .collapse-btn.left-btn { right: -14px; }
+  .collapse-btn.right-btn { left: -14px; border-radius: 6px 0 0 6px; }
+  .collapse-btn .ico { width: 10px; height: 10px; }
+
+  /* --- sections: no boxes inside boxes, hairlines between groups --- */
+  .panel .card { background: transparent; border: none; box-shadow: none; padding: 0; border-radius: 0; }
+  .panel > .group { padding: 14px 0 16px; }
+  body:not(.compact-panels) .panel > .group ~ .group, body.compact-panels .panel > .group.ptab-on ~ .group.ptab-on { border-top: 1px solid var(--hairline); }
+  .group-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .group-title .gt-ico { width: 22px; height: 22px; border-radius: 6px; box-shadow: none; }
+  .group-title .gt-ico .ico { width: 13px; height: 13px; }
+  .subhead { font-size: 11px; letter-spacing: .02em; text-transform: none; font-weight: 700; color: var(--text-secondary); }
+  .subhead::after { background: var(--hairline); }
+  .mini-field { font-size: 12.5px; }
+  .mini-field > span:first-child { color: var(--text-tertiary); font-weight: 500; }
+  .switch-row { font-weight: 500; color: var(--text-tertiary); }
+  .selInfo { font-size: 13px; font-weight: 650; border-bottom-color: var(--hairline); }
+
+  /* --- segmented controls --- */
+  body.compact-panels .ptabs { position: sticky; top: -14px; margin: -14px -14px 4px; padding: 10px 12px; background: var(--sidebar);
+    border-bottom: 1px solid var(--hairline); gap: 0; }
+  .ptabs { box-sizing: border-box; }
+  body.compact-panels .ptabs::before { content: ''; position: absolute; inset: 10px 12px; border-radius: 8px; background: var(--seg-track); z-index: -1; }
+  .ptabs button { flex-direction: row; justify-content: center; gap: 5px; height: 28px; padding: 0 6px; margin: 2px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--text-tertiary); }
+  .ptabs button .ico { width: 14px; height: 14px; }
+  .ptabs button:hover { background: transparent; color: var(--text); }
+  .ptabs button.on { background: var(--ctrl-bg); color: var(--text); box-shadow: 0 0 0 .5px var(--ctrl-border), 0 1px 3px rgba(0,0,0,.10); }
+  body.compact-panels .ptabs { isolation: isolate; }
+  body.compact-panels .isec-tabs { background: var(--seg-track); border: none; padding: 2px; gap: 2px; border-radius: 8px; }
+  .isec-tabs button { padding: 5px 7px; font-size: 11.5px; font-weight: 600; color: var(--text-tertiary); border-radius: 6px; }
+  .isec-tabs button.on { background: var(--ctrl-bg); color: var(--text); box-shadow: 0 0 0 .5px var(--ctrl-border), 0 1px 2px rgba(0,0,0,.10); }
+  .legs-seg { background: var(--seg-track) !important; border: none !important; }
+  .res-seg { background: var(--seg-track) !important; border: none !important; }
+  .res-seg button.on { background: var(--ctrl-bg); color: var(--text); box-shadow: 0 0 0 .5px var(--ctrl-border), 0 1px 2px rgba(0,0,0,.1); }
+
+  /* --- native-looking controls --- */
+  .action-btn { height: 30px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; border-radius: 7px; font-size: 13px; font-weight: 500;
+    background: var(--ctrl-bg); border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow); color: var(--text); }
+  .action-btn:hover { background: var(--btn-bg-hover); }
+  .action-btn[style*="background"] { background: var(--ctrl-bg) !important; color: var(--text) !important; }
+  .action-btn.primary { background: var(--accent); color: #fff; box-shadow: 0 .5px 1px rgba(0,0,0,.15), inset 0 .5px 0 rgba(255,255,255,.18); font-weight: 600; }
+  .action-btn.primary:hover { background: var(--accent-hover); box-shadow: 0 .5px 1px rgba(0,0,0,.15); }
+  .action-btn.danger { background: var(--ctrl-bg); color: var(--danger); box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow); }
+  .action-btn.danger:hover { background: var(--danger-soft); }
+  .btn-row .action-btn { padding: 0 6px; }
+  body.compact-panels .fmt-tile { height: 50px !important; background: var(--ctrl-bg) !important; border: none !important; box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow) !important; }
+  .mini-field input[type=number], .field input[type=text], .field select, .mini-select, .leg-row select, .leg-row input[type=number], .nudge-group input[type=number] {
+    background: var(--ctrl-bg) !important; border: none !important; box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow); border-radius: 6px !important; color: var(--text); }
+  .mini-field input[type=number] { height: 24px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+  .field input[type=text], .field select { height: 30px; padding: 4px 10px; font-size: 13px; }
+  .mini-field input[type=number]:focus, .field input[type=text]:focus, .field select:focus, .leg-row input:focus { box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .35) !important; outline: none; }
+  input[type=color] { -webkit-appearance: none; appearance: none; padding: 0; border: none; background: transparent; cursor: pointer; }
+  input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type=color]::-webkit-color-swatch { border: none; border-radius: 6px; }
+  input[type=color]::-moz-color-swatch { border: none; border-radius: 6px; }
+  .mini-field input[type=color] { width: 44px; height: 22px; border-radius: 6px; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 0 0 2.5px var(--ctrl-bg), 0 0 0 3px var(--ctrl-border); }
+  .leg-row .leg-extra input[type=color] { border-radius: 6px; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 0 0 2.5px var(--ctrl-bg), 0 0 0 3px var(--ctrl-border); }
+  body.compact-panels .isec-tabs { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .isec-tabs button { padding: 5px 2px; overflow: hidden; text-overflow: ellipsis; }
+  .switch .slider { background: rgba(120,120,128,.24); }
+  .switch input:checked + .slider { background: #34c759; }
+  .switch { transform: scale(.88); transform-origin: right center; }
+
+  /* --- tiles (shapes, styles, symbols, presets) --- */
+  .shape-btn, .style-btn, .fam-btn { background: transparent; border: 1px solid transparent; border-radius: 8px; box-shadow: none; }
+  .shape-btn:hover, .style-btn:hover, .fam-btn:hover { background: rgba(118,118,128,.12); transform: none; }
+  .shape-btn.active, .style-btn.active, .fam-btn.active { background: rgba(var(--accent-rgb), .12); border-color: rgba(var(--accent-rgb), .55); box-shadow: none; }
+  .opt-chip { background: var(--ctrl-bg); border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow); border-radius: 7px; height: 28px; font-weight: 500; color: var(--text-tertiary); }
+  .opt-chip.on { background: rgba(var(--accent-rgb), .12); color: var(--accent); box-shadow: 0 0 0 1px rgba(var(--accent-rgb), .5); }
+  .sym-search { background: var(--seg-track); border: none; border-radius: 8px; height: 30px; }
+  .sym-search:focus-within { background: var(--ctrl-bg); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .3); }
+  .lib-tile { border-radius: 10px; }
+  .preview-wrapper { border-radius: 10px; border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), var(--ctrl-shadow); }
+
+  /* --- status bar (footer) --- */
+  .app-footer { height: 28px; padding: 0 14px; border-radius: 0; border: none; border-top: 1px solid var(--hairline); box-shadow: none;
+    background: var(--chrome); backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8); color: var(--text-secondary); font-size: 11px; }
+  .footer-content { gap: 0; width: 100%; }
+  .footer-content > * + *::before { content: none; }
+  .version-info { color: var(--text-secondary); padding: 1px 6px; font-weight: 600; }
+  .version-info:hover { background: rgba(118,118,128,.14); color: var(--text); }
+  .author-info { color: var(--text-secondary); margin: 0 10px; }
+  .author-info a { color: var(--text-secondary); }
+  .author-info a:hover { color: var(--accent); }
+  .github-link { border: none; padding: 1px 8px; border-radius: 5px; color: var(--text-secondary); font-weight: 500; background: transparent; }
+  .github-link:hover { background: rgba(118,118,128,.14); color: var(--text); border: none; }
+  .help-link { margin-left: auto; color: var(--accent); font-weight: 600; }
+  .help-link:hover { color: var(--accent); background: rgba(var(--accent-rgb), .1); }
+
+  /* floating glass on the canvas: a touch more native */
+  .tool-dock { border-radius: 12px; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 8px 24px rgba(0,0,0,.10); border: none; }
+  .zoom-controls { border-radius: 10px; border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 6px 18px rgba(0,0,0,.08); }
+  .minimap { border: none; box-shadow: 0 0 0 .5px var(--ctrl-border), 0 8px 24px rgba(0,0,0,.12); }
 </style>
 
 </head>
@@ -2654,6 +2799,10 @@
     return (defs ? `<defs>${defs}</defs>` : '') + (fill !== 'none' ? shape(`fill="${fill}" stroke="none"`) : '') + pat + border;
   }
   // TikZ version of the same body (colours written as #RRGGBB, turned into \definecolor names on export).
+  // Arrow head placed along the path (like the canvas), drawn plain even on wavy or double lines.
+  function tikzMidArrow(t, size, reverse){
+    return `postaction={decorate, decoration={markings, mark=at position ${t.toFixed(2)} with {\\arrow[line width=0.6pt]{${reverse ? 'Stealth[length=' + (size*0.35).toFixed(1) + 'mm, reversed]' : 'Stealth[length=' + (size*0.35).toFixed(1) + 'mm]'}}}}}`;
+  }
   function kernelBodyTikz(ku, body, cx){
     const sc = 50, c1 = ku.boxColor1 || '#e2e8f0', c2 = ku.boxColor2 || '#94a3b8';
     const path = body.type === 'rect' ? `${cx(body.x,body.y)} rectangle ${cx(body.x+body.w,body.y+body.h)}`
@@ -2661,14 +2810,14 @@
       : body.points.map(p=>cx(p.x,p.y)).join(' -- ') + ' -- cycle';
     let s = '';
     const fm = ku.fillMode || 'gradient', dir = kernelGradientDir(ku);
-    if(fm === 'solid') s += `\fill[${c1}] ${path};
+    if(fm === 'solid') s += `\\fill[${c1}] ${path};
 `;
     else if(fm === 'gradient'){
       const sh = dir === 'v' ? `top color=${c1}, bottom color=${c2}` : dir === 'radial' ? `inner color=${c1}, outer color=${c2}`
         : dir === 'd' ? `upper left=${c1}, lower right=${c2}, upper right=${c1}!50!${c2}, lower left=${c1}!50!${c2}`
         : dir === 'd2' ? `upper right=${c1}, lower left=${c2}, upper left=${c1}!50!${c2}, lower right=${c1}!50!${c2}`
         : `left color=${c1}, right color=${c2}`;
-      s += `\shade[${sh}] ${path};
+      s += `\\shade[${sh}] ${path};
 `;
     }
     const border = ku.borderColor || ku.lineColor || '#1d1d1f';
@@ -2678,28 +2827,28 @@
         : body.type === 'ellipse' ? { x:body.cx-body.rx, y:body.cy-body.ry, w:2*body.rx, h:2*body.ry }
         : (()=>{ const xs = body.points.map(p=>p.x), ys = body.points.map(p=>p.y); return { x:Math.min(...xs), y:Math.min(...ys), w:Math.max(...xs)-Math.min(...xs), h:Math.max(...ys)-Math.min(...ys) }; })();
       const nDiv = Math.max(1, ku.gridDivisions || 8);
-      s += `\begin{scope}
-\clip ${path};
+      s += `\\begin{scope}
+\\clip ${path};
 `;
       if(pattern === 'grid'){
         for(let i=1;i<nDiv;i++){ const gx = bb.x + bb.w*i/nDiv, gy = bb.y + bb.h*i/nDiv;
-          s += `\draw[${border}, line width=0.3pt] ${cx(gx,bb.y)} -- ${cx(gx,bb.y+bb.h)};
-\draw[${border}, line width=0.3pt] ${cx(bb.x,gy)} -- ${cx(bb.x+bb.w,gy)};
+          s += `\\draw[${border}, line width=0.3pt] ${cx(gx,bb.y)} -- ${cx(gx,bb.y+bb.h)};
+\\draw[${border}, line width=0.3pt] ${cx(bb.x,gy)} -- ${cx(bb.x+bb.w,gy)};
 `; }
       } else {
         const step = Math.max(bb.w, bb.h) / nDiv, flip = ku.hatchDir === 'l';
         for(let k = -bb.h; k <= bb.w + 1e-6; k += step){
-          s += flip ? `\draw[${border}, line width=0.3pt] ${cx(bb.x+k,bb.y)} -- ${cx(bb.x+k+bb.h,bb.y+bb.h)};
+          s += flip ? `\\draw[${border}, line width=0.3pt] ${cx(bb.x+k,bb.y)} -- ${cx(bb.x+k+bb.h,bb.y+bb.h)};
 `
-                    : `\draw[${border}, line width=0.3pt] ${cx(bb.x+k,bb.y+bb.h)} -- ${cx(bb.x+k+bb.h,bb.y)};
+                    : `\\draw[${border}, line width=0.3pt] ${cx(bb.x+k,bb.y+bb.h)} -- ${cx(bb.x+k+bb.h,bb.y)};
 `;
         }
       }
-      s += `\end{scope}
+      s += `\\end{scope}
 `;
     }
     const bs = ku.borderStyle || 'solid', bw = ku.borderWidth != null ? ku.borderWidth : 1.6;
-    if(bs !== 'none') s += `\draw[${border}, line width=${(bw*0.6).toFixed(2)}pt${bs === 'dashed' ? ', dashed' : bs === 'dotted' ? ', dotted' : ''}] ${path};
+    if(bs !== 'none') s += `\\draw[${border}, line width=${(bw*0.6).toFixed(2)}pt${bs === 'dashed' ? ', dashed' : bs === 'dotted' ? ', dotted' : ''}] ${path};
 `;
     return s;
   }
@@ -4566,7 +4715,7 @@
 
   function buildExportTikz(){
     const scale=50; const cx=(x,y)=>`(${(x/scale).toFixed(2)},${(-y/scale).toFixed(2)})`;
-    let s = `% Requires: \\usepackage{tikz}\n% \\usetikzlibrary{arrows.meta, decorations.pathmorphing}\n\\begin{tikzpicture}[scale=0.9]\n`;
+    let s = `% Requires: \\usepackage{tikz}\n% \\usetikzlibrary{arrows.meta, decorations.pathmorphing, decorations.markings, calc, shadings}\n\\begin{tikzpicture}[scale=0.9]\n`;
     // Stacking order: each element is written into its own chunk, then all chunks are sorted by layer (z),
     // then by type, then by insertion order — so the TikZ output stacks exactly like the canvas.
     const zChunks=[]; const zEach=(arr,rank,fn)=>arr.forEach((o,i)=>{ const saved=s; s=''; fn(o,i); zChunks.push({z:o.z||0,rank,i,str:s}); s=saved; });
@@ -4589,10 +4738,10 @@
       let styleOpts = legOpts(ku.lineStyle, !!ku.mirrorLegs);
 
       if(ku.angle) s += `\\begin{scope}[rotate around={${(-ku.angle).toFixed(1)}:${cx(ku.cx,ku.cy)}}]\n`;
-      const drawLeg = (p0,p1,withArrow) => {
-        const o = [...styleOpts]; if(withArrow) o.push(`->{Stealth[length=${((ku.lineArrowSize||9)*0.35).toFixed(1)}mm]}`);
-        const m = cx((p0.x+p1.x)/2, (p0.y+p1.y)/2);
-        s += `\\draw[${o.join(', ')}] ${cx(p0.x,p0.y)} .. controls ${m} and ${m} .. ${cx(p1.x,p1.y)};\n`;
+      const drawLeg = (p0,p1,withArrow,arrowT) => {
+        const o = [...styleOpts];
+        s += `\\draw[${o.join(', ')}] ${cx(p0.x,p0.y)} -- ${cx(p1.x,p1.y)};\n`;
+        if(withArrow){ const col = o.find(x=> x.startsWith('draw={')); s += `\\path[${col ? col.replace('draw=', 'color=') + ', ' : ''}${tikzMidArrow(arrowT != null ? arrowT : 0.5, ku.lineArrowSize||9, false)}] ${cx(p0.x,p0.y)} -- ${cx(p1.x,p1.y)};\n`; }
       };
       const dirMapT = KERNEL_DIRS[legs.length] || {};
       legs.forEach(({tag,anchor,outer})=>{
@@ -4600,7 +4749,8 @@
         const isIn = ku.reverseArrows ? baseDir!=='in' : baseDir==='in';
         const legOv = (ku.legOverrides||{})[tag]; const showArrow = (legOv && legOv.arrow!=null) ? legOv.arrow : ku.lineArrow;
         styleOpts = legOpts(legStyleOf(ku, tag), legMirrorOf(ku, tag), legColorOf(ku, tag));
-        if(isIn) drawLeg(outer, anchor, showArrow); else drawLeg(anchor, outer, showArrow);
+        const arrowT = (ku.arrowStyle==='anchor') ? (isIn ? 0.85 : 0.15) : 0.5;
+        if(isIn) drawLeg(outer, anchor, showArrow, arrowT); else drawLeg(anchor, outer, showArrow, arrowT);
       });
 
       s += kernelBodyTikz(ku, body, cx);
@@ -4628,8 +4778,10 @@
 
     zEach(state.lines, 1, (ln)=>{
       const v1=findVertex(ln.from), v2=findVertex(ln.to); const {C} = lineEndpoints(ln); const ctrl = cx(C.x, C.y); let opts = [];
-      let arrowDir = ln.reverseArrow ? '<-' : '->';
-      if(ln.arrow) opts.push(`${arrowDir}>={Stealth[length=${((ln.arrowSize||9)*0.35).toFixed(1)}mm]}`);
+      // arrow in the middle of the line, exactly like on the canvas (decorations.markings)
+      // (drawn on a separate plain \path, so it also works on wavy / coiled lines)
+      const arrowOpt = ln.arrow ? tikzMidArrow(0.5, ln.arrowSize||9, ln.reverseArrow) : '';
+      const arrowCol = (ln.color && ln.color!=='#1d1d1f') ? `color={${ln.color}}, ` : '';
       if(ln.double) opts.push(`double, double distance=${((ln.gap||4)/50*28.45).toFixed(1)}pt`);
       if(ln.color && ln.color!=='#1d1d1f') opts.push(`draw={${ln.color}}`);
       if(ln.style==='dashed') opts.push('dashed'); if(ln.style==='dotted') opts.push('dotted'); if(ln.style==='dashdot') opts.push('dash dot');
@@ -4647,7 +4799,19 @@
         const posTkz = (ln.labelPos==='bottom') ? 'below right' : 'above left'; const lfsz = ((ln.labelSize||16)*0.75).toFixed(1);
         nodeStr = ` node[pos=0.5, ${posTkz}, font=\\fontsize{${lfsz}pt}{${lfsz}pt}\\selectfont] {$${ln.label}$}`;
       }
-      s += `\\draw[${opts.join(', ')}] ${cx(v1.x, v1.y)} .. controls ${ctrl} and ${ctrl} ..${nodeStr} ${cx(v2.x, v2.y)};\n`;
+      if(v1 === v2 || (v1.x === v2.x && v1.y === v2.y)){
+        // self-loop: the same two cubic arcs the canvas draws (through the control point)
+        const P = v1, nx = -(C.y - P.y)*0.6, ny = (C.x - P.x)*0.6;
+        const above = C.y < P.y, lsideNode = nodeStr ? nodeStr.replace('pos=0.5, above left', `pos=1, ${above ? 'above' : 'below'}`).replace('pos=0.5, below right', `pos=1, ${above ? 'above' : 'below'}`) : '';
+        const geo = (node)=> `${cx(P.x, P.y)} .. controls ${cx(P.x+nx, P.y+ny)} and ${cx(C.x+nx, C.y+ny)} ..${node} ${cx(C.x, C.y)} .. controls ${cx(C.x-nx, C.y-ny)} and ${cx(P.x-nx, P.y-ny)} .. ${cx(P.x, P.y)}`;
+        s += `\\draw[${opts.join(', ')}] ${geo(lsideNode)};\n`;
+        if(arrowOpt) s += `\\path[${arrowCol}${arrowOpt}] ${geo('')};\n`;
+      } else {
+        // the canvas curve is a quadratic Bézier: write it as the equivalent cubic (controls at 2/3 towards C)
+        const c1 = cx(v1.x + 2/3*(C.x - v1.x), v1.y + 2/3*(C.y - v1.y)), c2 = cx(v2.x + 2/3*(C.x - v2.x), v2.y + 2/3*(C.y - v2.y));
+        s += `\\draw[${opts.join(', ')}] ${cx(v1.x, v1.y)} .. controls ${c1} and ${c2} ..${nodeStr} ${cx(v2.x, v2.y)};\n`;
+        if(arrowOpt) s += `\\path[${arrowCol}${arrowOpt}] ${cx(v1.x, v1.y)} .. controls ${c1} and ${c2} .. ${cx(v2.x, v2.y)};\n`;
+      }
     });
 
     zEach(state.annotations, 2, (ann)=>{
@@ -5917,6 +6081,7 @@
         <li><span><b>Tight exports</b> cropped to the real content with your margin, from 1× to 8×; an automatic <b>diagram check</b> flags overlaps, duplicates and LaTeX errors.</span></li>
         <li><span>Collapsible Inspector sections, minimap, optional dark canvas, smooth appear / disappear animations.</span></li>
         <li><span><b>Session recovery</b> after an accidental close; drop a <code>.json</code> on the canvas to open it.</span></li>
+        <li><span><b>TikZ export reworked</b>: arrows in the middle of the lines (as on the canvas), exact curves, self-loops, kernel bodies with gradients / patterns, per-leg colours — it compiles cleanly (libraries listed at the top of the file).</span></li>
         <li><span>Reliable undo for every drag and Inspector edit; <kbd>${k('Ctrl+Z')}</kbd> / <kbd>${k('Ctrl+Shift+Z')}</kbd>.</span></li>
       </ul>
       <button type="button" class="action-btn primary wn-close">Start drawing</button>
@@ -7664,7 +7829,7 @@
   // Inspector: a segmented row of section tabs per editor; only the chosen section is shown.
   const ISEC_SHORT = { 'Vertex Properties':'Vertex', '4 Labels (Drag available)':'Labels', 'Geometry and GF Style':'Style', 'GF Label':'Label',
     'Curve/Arrow Structure':'Curve', 'Curved Text Path':'Text', 'Base Text (Rotatable)':'Text', 'Kernel Block (single)':'Block', 'Body':'Body', 'Colors':'Colors',
-    'LaTeX Label (centered in body)':'Label', 'Leg Style':'Legs', 'External Vertex Labels (LaTeX)':'Vertex labels' };
+    'LaTeX Label (centered in body)':'Label', 'Leg Style':'Legs', 'External Vertex Labels (LaTeX)':'Vertices' };
   const ISEC_KEY = 'feynmanStudio.inspTab';
   const isecState = lsGet(ISEC_KEY, {});
   ['vertexEditor','lineEditor','annotationEditor','symbolEditor','kernelUnitEditor'].forEach(edId=>{
